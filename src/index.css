@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-style: var(--border-style);
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-canvas text-text-primary font-sans antialiased;
+    background-image: var(--effect-canvas-image);
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 100dvh;
+  }
+  :focus-visible {
+    outline: var(--focus-width) solid rgb(var(--color-accent));
+    outline-offset: var(--focus-offset);
+  }
+  h1 {
+    @apply text-2xl font-bold tracking-tight;
+  }
+  h2 {
+    @apply text-lg font-semibold;
+  }
+}
+
+@layer components {
+  .surface {
+    @apply bg-surface border border-border;
+    backdrop-filter: var(--effect-surface-backdrop);
+  }
+  .card {
+    @apply surface rounded-card shadow-card p-4;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-control border border-border bg-surface px-3 py-2 text-sm font-medium
+      text-text-primary shadow-control transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 select-none;
+  }
+  .btn:active:not(:disabled) {
+    box-shadow: var(--shadow-inset);
+  }
+  .btn-primary {
+    @apply btn border-transparent bg-accent text-accent-foreground hover:bg-accent-hover;
+  }
+  .btn-ghost {
+    @apply btn border-transparent bg-transparent shadow-none;
+  }
+  .btn-danger {
+    @apply btn text-danger;
+  }
+  .btn-sm {
+    @apply px-2 py-1 text-xs;
+  }
+  .btn-icon {
+    @apply btn h-9 w-9 p-0;
+  }
+  .input {
+    @apply w-full rounded-control border border-border bg-canvas px-3 py-2 text-sm text-text-primary shadow-inset
+      placeholder:text-text-muted;
+  }
+  .label {
+    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-text-muted;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-pill bg-surface-hover px-2 py-0.5 text-xs font-medium text-text-secondary;
+  }
+  .chip {
+    @apply rounded-pill border border-border px-3 py-1 text-sm transition-colors hover:bg-surface-hover;
+  }
+  .chip-active {
+    @apply chip border-accent bg-accent/15 text-text-primary;
+  }
+  .tab {
+    @apply rounded-control px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover;
+  }
+  .tab-active {
+    @apply tab bg-accent/15 text-text-primary;
+  }
+  .muted {
+    @apply text-text-muted;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .touch-none-all,
+  .touch-none-all * {
+    touch-action: none;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-pop {
+  animation: pop-in 0.18s ease-out;
+}
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes mascot-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes mascot-think {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+@keyframes mascot-jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes mascot-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

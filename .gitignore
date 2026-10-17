@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.work/
+.claude/
+*.local
+.DS_Store
+coverage/
+public/engine/
