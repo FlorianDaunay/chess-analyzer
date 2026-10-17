@@ -20,10 +20,10 @@ export function GuideWidget() {
   useEffect(() => {
     setTip(0);
     useGuide.setState({ message: null, mood: "idle" });
-    if (!seen.current.has(pathname)) {
-      seen.current.add(pathname);
-      if (enabled && pathname === "/") setOpen(true);
-    }
+    // A bubble left open would cover the next page: close it, except on the first visit of Home.
+    const firstHome = !seen.current.has(pathname) && pathname === "/";
+    seen.current.add(pathname);
+    setOpen(enabled && firstHome);
   }, [pathname, enabled, setOpen]);
 
   useEffect(() => {

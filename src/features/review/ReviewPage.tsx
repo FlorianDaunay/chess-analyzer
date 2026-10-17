@@ -90,6 +90,7 @@ function Review() {
   const [engineOn, setEngineOn] = useState(true);
   const [analysis, setAnalysis] = useState<GameAnalysis | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [book, setBook] = useState<OpeningBook | null>(null);
   const [retry, setRetry] = useState<{ fromId: string; target: MoveAnalysis } | null>(null);
   const [retryResult, setRetryResult] = useState<string | null>(null);
@@ -114,9 +115,12 @@ function Review() {
 
   const runAnalysis = async () => {
     setProgress(0);
+    setAnalysisError(null);
     try {
       const a = await store.analyzeOne(input.id, input.pgn, setProgress);
       setAnalysis(a);
+    } catch (e) {
+      setAnalysisError(`The analysis failed: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setProgress(null);
     }
@@ -382,9 +386,12 @@ function Review() {
             </div>
           ) : (
             parsed.ucis.length > 0 && (
-              <button className="btn-primary" onClick={runAnalysis} disabled={progress !== null}>
-                <Icon name="chart" /> {progress !== null ? `Analyzing… ${Math.round(progress * 100)}%` : "Full game analysis"}
-              </button>
+              <>
+                <button className="btn-primary" onClick={runAnalysis} disabled={progress !== null}>
+                  <Icon name="chart" /> {progress !== null ? `Analyzing… ${Math.round(progress * 100)}%` : analysisError ? "Retry the analysis" : "Full game analysis"}
+                </button>
+                {analysisError && <p className="rounded-control bg-danger/10 p-2 text-xs text-danger">{analysisError}</p>}
+              </>
             )
           )}
         </div>

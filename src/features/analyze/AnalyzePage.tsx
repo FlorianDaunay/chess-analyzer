@@ -196,13 +196,13 @@ function ProfileHeader() {
 }
 
 function EnginePanel({ ids, unanalyzed }: { ids: string[]; unanalyzed: number }) {
-  const { queue, analyze, cancel, depth, setDepth, analyses } = useAnalysis();
+  const { queue, analyze, cancel, depth, setDepth, analyses, analysisError } = useAnalysis();
   const analyzed = ids.filter((id) => analyses.has(id)).length;
   const pending = ids.filter((id) => !analyses.has(id));
   return (
     <div className="card flex flex-wrap items-center gap-3">
       <div className="flex min-w-[200px] flex-1 items-center gap-3">
-        <Mascot size={44} mood={queue.running ? "thinking" : analyzed ? "happy" : "idle"} />
+        <Mascot size={44} mood={queue.running ? "thinking" : analysisError ? "sad" : analyzed ? "happy" : "idle"} />
         <div className="flex-1">
           <div className="text-sm font-semibold">
             Engine analysis · {analyzed}/{ids.length} games
@@ -216,6 +216,8 @@ function EnginePanel({ ids, unanalyzed }: { ids: string[]; unanalyzed: number })
                 <div className="h-full bg-accent transition-all" style={{ width: `${((queue.done + queue.current) / Math.max(1, queue.total)) * 100}%` }} />
               </div>
             </>
+          ) : analysisError ? (
+            <div className="text-xs font-medium text-danger">{analysisError}</div>
           ) : (
             <div className="text-xs muted">Accuracy, best/worst moves and exercises need engine analysis. It runs in your browser.</div>
           )}

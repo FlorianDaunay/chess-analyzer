@@ -36,7 +36,10 @@ export class AnalysisPool {
     if (hit) return hit;
     const terminal = terminalEval(fen);
     if (terminal) return terminal;
-    const engine = this.engines[this.next++ % this.engines.length];
+    const slot = this.next++ % this.engines.length;
+    // A crashed worker is replaced (it fails for good only if the new one fails too).
+    if (this.engines[slot].isDead()) this.engines[slot] = new Engine();
+    const engine = this.engines[slot];
     const a = await engine.analyse(fen, { depth, multipv: 2 }).promise;
     const first = a.lines[0];
     const ev: PositionEval = {

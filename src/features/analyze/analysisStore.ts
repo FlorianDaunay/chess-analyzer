@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { ChessComError, fetchArchives, fetchMonth, fetchProfile, fetchStats, summarize, type CCProfile, type CCRawGame, type CCStats, type GameSummary } from "@/core/chesscom/api";
 import { AnalysisPool, analyzePgn } from "@/core/analysis/analyzer";
+import { EngineError } from "@/core/engine/engine";
 import { ANALYSIS_VERSION, type GameAnalysis } from "@/core/analysis/classify";
 import { parsePgn } from "@/core/chess/pgn";
 import { idbGet, idbGetMany, idbSet } from "@/store/idb";
@@ -25,6 +26,8 @@ interface AnalysisState {
   analyses: Map<string, GameAnalysis>;
   clocks: Map<string, (number | undefined)[]>;
   queue: QueueState;
+  /** Problem during the engine analysis (shown above the results). */
+  analysisError: string | null;
   depth: number;
   load: (user: string, months: number) => Promise<void>;
   analyze: (ids: string[]) => Promise<void>;
@@ -52,6 +55,7 @@ export const useAnalysis = create<AnalysisState>((set, get) => ({
   analyses: new Map(),
   clocks: new Map(),
   queue: { running: false, done: 0, total: 0, current: 0, currentId: null },
+  analysisError: null,
   depth: 12,
 
   setDepth: (depth) => set({ depth }),
@@ -112,7 +116,9 @@ export const useAnalysis = create<AnalysisState>((set, get) => ({
     if (get().queue.running) return;
     cancelled = false;
     const todo = ids.filter((id) => !get().analyses.has(id));
-    set({ queue: { running: true, done: 0, total: todo.length, current: 0, currentId: null } });
+    set({ queue: { running: true, done: 0, total: todo.length, current: 0, currentId: null }, analysisError: null });
+    let failed = 0;
+    let lastError = "";
     for (const id of todo) {
       if (cancelled) break;
       const game = get().games.find((g) => g.id === id);
@@ -129,11 +135,19 @@ export const useAnalysis = create<AnalysisState>((set, get) => ({
           clocks.set(id, parsePgn(game.pgn).clocks);
           return { analyses, clocks, queue: { ...s.queue, done: s.queue.done + 1 } };
         });
-      } catch {
+      } catch (e) {
         if (cancelled) break;
+        failed++;
+        lastError = e instanceof Error ? e.message : String(e);
+        console.error("Analysis failed for", id, e);
+        // The engine itself is broken: no use trying the other games.
+        if (e instanceof EngineError) break;
       }
     }
-    set((s) => ({ queue: { ...s.queue, running: false, currentId: null } }));
+    set((s) => ({
+      queue: { ...s.queue, running: false, currentId: null },
+      analysisError: failed ? `${failed} game${failed > 1 ? "s" : ""} could not be analyzed. ${lastError}` : null,
+    }));
   },
 
   cancel: () => {

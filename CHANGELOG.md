@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/); the version shown in the app comes from `package.json`.
 
+## [0.1.2] - 2026-10-17
+
+### Fixes
+- An error inside a page no longer blanks the app: a message with Try again / Reload / Home is shown and the menu stays usable. Technical details can be copied for bug reports.
+- After a new deploy, a tab still running the old version reloads itself instead of failing to open pages.
+- Engine analysis failures are reported (in Analyze and in the review board) instead of hanging silently; a crashed engine is restarted.
+- The guide bubble closes when changing page so it does not cover the content.
+
 ## [0.1.1] - 2026-10-17
 
 ### Fixes
@@ -23,5 +31,6 @@ First release.
 - Free board editor with palette, presets and FEN.
 - ~60 UI themes, 6 board themes, light/dark following the system; PC and phone layouts.
 
+[0.1.2]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/FlorianDaunay/chess-analyzer/releases/tag/v0.1.0

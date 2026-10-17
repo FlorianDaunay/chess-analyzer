@@ -18,6 +18,8 @@ interface Job {
   cancelled: boolean;
 }
 
+export class EngineError extends Error {}
+
 const ENGINE_URL = `${import.meta.env.BASE_URL}engine/stockfish.js`;
 
 /**
@@ -33,21 +35,35 @@ export class Engine {
   private maxDepth = 0;
   private listeners: ((line: string) => void)[] = [];
   private options = { multipv: 0, skill: -1 };
-  private dead = false;
+  private dead: EngineError | null = null;
 
   constructor() {
     this.worker = new Worker(ENGINE_URL);
     this.worker.onmessage = (e: MessageEvent) => this.onLine(String(e.data));
     this.worker.onerror = (e) => {
-      this.dead = true;
-      this.current?.reject(e);
-      this.queue.forEach((j) => j.reject(e));
+      e.preventDefault?.();
+      this.fail(new EngineError(`The chess engine stopped: ${e.message || "it could not be loaded"}.`));
     };
+    // A browser that cannot run the engine (no WebAssembly…) never answers: give up after a while.
+    const timeout = setTimeout(() => this.fail(new EngineError("The chess engine did not start in this browser.")), 20_000);
     this.ready = (async () => {
       await this.waitFor("uci", (l) => l === "uciok");
+      clearTimeout(timeout);
       this.send("setoption name Hash value 32");
       await this.isReady();
     })();
+  }
+
+  /** The engine cannot be used anymore: every pending and future search fails with this error. */
+  private fail(error: EngineError) {
+    if (this.dead) return;
+    this.dead = error;
+    this.current?.reject(error);
+    this.queue.forEach((j) => j.reject(error));
+    this.current = null;
+    this.queue = [];
+    this.worker.terminate();
+    if (shared === this) shared = null;
   }
 
   private send(cmd: string) {
@@ -129,6 +145,10 @@ export class Engine {
       job = { fen, opts, resolve, reject, cancelled: false };
     });
     promise.catch(() => undefined);
+    if (this.dead) {
+      job.reject(this.dead);
+      return { promise, cancel: () => undefined };
+    }
     if (interrupt) {
       this.queue.forEach((j) => (j.cancelled = true));
       if (this.current) {
@@ -147,6 +167,10 @@ export class Engine {
     };
   }
 
+  isDead() {
+    return !!this.dead;
+  }
+
   /** Clears the hash between unrelated games. */
   newGame() {
     this.send("ucinewgame");
@@ -161,13 +185,12 @@ export class Engine {
   }
 
   terminate() {
-    this.dead = true;
-    this.worker.terminate();
+    this.fail(new EngineError("Engine stopped."));
   }
 }
 
 let shared: Engine | null = null;
-/** One engine for interactive use (live eval, mascot moves, hints). Batch analysis creates its own. */
+/** One engine for interactive use (live eval, mascot moves, hints). Batch analysis creates its own. A failed engine is replaced on the next call. */
 export function sharedEngine(): Engine {
   shared ??= new Engine();
   return shared;
