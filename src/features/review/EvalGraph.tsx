@@ -63,15 +63,28 @@ export function EvalGraph({ analysis, ply, onSelect, height = 110 }: { analysis:
   );
 }
 
-export function EvalBar({ wp, label, orientation, className = "" }: { wp: number; label: string; orientation: "w" | "b"; className?: string }) {
-  // wp = White's win%. The bar shows White at the bottom when White is at the bottom.
+/**
+ * White's winning chances as a bar. Vertical next to the board (White at the bottom when White
+ * plays up), or horizontal above it on phones (White on the left when White plays up).
+ * The caller sets the display class (e.g. "hidden sm:flex").
+ */
+export function EvalBar({ wp, label, orientation, horizontal = false, className = "" }: { wp: number; label: string; orientation: "w" | "b"; horizontal?: boolean; className?: string }) {
   const whiteShare = Math.max(2, Math.min(98, wp));
+  const whiteFirst = orientation === "w";
+  const whiteAhead = wp >= 50;
+  const direction = horizontal ? (whiteFirst ? "row" : "row-reverse") : whiteFirst ? "column-reverse" : "column";
+  // The label sits on the side of the player who is better, in the colour that contrasts there.
+  const labelPos = horizontal
+    ? whiteAhead === whiteFirst
+      ? "left-1.5"
+      : "right-1.5"
+    : whiteAhead === whiteFirst
+      ? "bottom-1 left-0 right-0 text-center"
+      : "top-1 left-0 right-0 text-center";
   return (
-    <div className={`relative overflow-hidden rounded-[4px] bg-[#3a3835] ${className}`} style={{ display: "flex", flexDirection: orientation === "w" ? "column-reverse" : "column" }}>
-      <div className="bg-[#eeeae2] transition-all duration-500" style={{ height: `${whiteShare}%` }} />
-      <span
-        className={`absolute left-0 right-0 text-center text-[9px] font-bold ${(wp >= 50) === (orientation === "w") ? "bottom-1 text-[#3a3835]" : "top-1 text-[#eeeae2]"}`}
-      >
+    <div className={`relative overflow-hidden rounded-[4px] bg-[#3a3835] ${className}`} style={{ flexDirection: direction }}>
+      <div className="bg-[#eeeae2] transition-all duration-500" style={horizontal ? { width: `${whiteShare}%` } : { height: `${whiteShare}%` }} />
+      <span className={`absolute text-[9px] font-bold leading-none ${horizontal ? "top-1/2 -translate-y-1/2" : ""} ${labelPos} ${whiteAhead ? "text-[#3a3835]" : "text-[#eeeae2]"}`}>
         {label.replace("+", "")}
       </span>
     </div>

@@ -199,27 +199,29 @@ function Review() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <h1 className="truncate text-xl">
+          <h1 className="truncate text-base sm:text-xl">
             {input.white} <span className="muted">vs</span> {input.black}
           </h1>
           <p className="truncate text-xs muted">{openingName ?? parsed.headers.Event ?? ""}</p>
         </div>
-        <div className="flex gap-2">
-          <button className="btn" onClick={() => navigator.clipboard?.writeText(fen)} title="Copy FEN">
-            <Icon name="copy" /> FEN
+        <div className="flex shrink-0 gap-2">
+          <button className="btn px-2.5 sm:px-3" onClick={() => navigator.clipboard?.writeText(fen)} title="Copy FEN" aria-label="Copy FEN">
+            <Icon name="copy" /> <span className="hidden sm:inline">FEN</span>
           </button>
-          <button className="btn" onClick={() => navigate("/play", { state: { fen } })} title="Play this position against the mascot">
-            <Icon name="play" /> Play from here
+          <button className="btn px-2.5 sm:px-3" onClick={() => navigate("/play", { state: { fen } })} title="Play this position against the mascot" aria-label="Play from here">
+            <Icon name="play" /> <span className="hidden sm:inline">Play from here</span>
           </button>
         </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="mx-auto w-full max-w-[min(100%,calc(100dvh-270px))] lg:max-w-[calc(100dvh-200px)]">
+        {/* Phones: the board uses the full screen width (no side margins, eval as a strip above). */}
+        <div className="-mx-3 sm:mx-auto sm:w-full sm:max-w-[min(100%,calc(100dvh-270px))] lg:max-w-[calc(100dvh-200px)]">
+          {engineOn && <EvalBar horizontal wp={wp} label={formatScore(evalScore)} orientation={orientation} className="mb-1 flex h-3 sm:hidden" />}
           <div className="flex gap-2">
-            {engineOn && <EvalBar wp={wp} label={formatScore(evalScore)} orientation={orientation} className="w-3 shrink-0 sm:w-5" />}
+            {engineOn && <EvalBar wp={wp} label={formatScore(evalScore)} orientation={orientation} className="hidden w-5 shrink-0 sm:flex" />}
             <div className="min-w-0 flex-1">
               <Board
                 fen={fen}
@@ -234,7 +236,7 @@ function Review() {
               />
             </div>
           </div>
-          <div className="mt-2 flex items-center justify-between">
+          <div className="mt-2 flex items-center justify-between px-3 sm:px-0">
             <div className="flex gap-1">
               <button className="btn-icon btn" onClick={() => go(tree.rootId)} aria-label="Start">
                 <Icon name="first" />
@@ -265,7 +267,7 @@ function Review() {
             </div>
           </div>
           {analysis && (
-            <div className="mt-3">
+            <div className="mt-3 px-3 sm:px-0">
               <EvalGraph
                 analysis={analysis}
                 ply={onMain ? node.ply : pathTo(tree, current).findIndex((n) => !isOnMainLine(tree, n.id))}

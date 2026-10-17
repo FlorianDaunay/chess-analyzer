@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/); the version shown in the app comes from `package.json`.
 
+## [0.1.4] - 2026-10-17
+
+### Fixes
+- Phone: the review board now uses the full screen width (390 px instead of 346 px on an iPhone 13); the evaluation becomes a thin strip above the board and the title row is more compact.
+
 ## [0.1.3] - 2026-10-17
 
 ### Fixes
@@ -37,6 +42,7 @@ First release.
 - Free board editor with palette, presets and FEN.
 - ~60 UI themes, 6 board themes, light/dark following the system; PC and phone layouts.
 
+[0.1.4]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.0...v0.1.1
