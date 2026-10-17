@@ -129,7 +129,9 @@ function PlayingScreen() {
   const [bubble, setBubble] = useState<{ text: string; mood: Mood } | null>({ text: vsAi ? "Good luck, have fun!" : "", mood: "happy" });
   const prevCp = useRef<number | null>(null);
   // The setup screen may be scrolled down: show the board.
-  useEffect(() => window.scrollTo(0, 0), []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const apply = (next: GameState) => setGame(next);
   const move = (uci: string) => {

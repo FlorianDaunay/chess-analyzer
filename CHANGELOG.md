@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/); the version shown in the app comes from `package.json`.
 
+## [0.1.1] - 2026-10-17
+
+### Fixes
+- App crashed when changing page on recent Chromium/Edge browsers (`window.scrollTo` now returns a Promise, which React took for an effect cleanup).
+
 ## [0.1.0] - 2026-10-17
 
 First release.
@@ -18,4 +23,5 @@ First release.
 - Free board editor with palette, presets and FEN.
 - ~60 UI themes, 6 board themes, light/dark following the system; PC and phone layouts.
 
+[0.1.1]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/FlorianDaunay/chess-analyzer/releases/tag/v0.1.0

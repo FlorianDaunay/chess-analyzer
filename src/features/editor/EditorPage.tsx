@@ -35,7 +35,9 @@ export default function EditorPage() {
   const problems = positionProblems(fen);
   const canCastle = possibleCastling(placement);
 
-  useEffect(() => setFenInput(fen), [fen]);
+  useEffect(() => {
+    setFenInput(fen);
+  }, [fen]);
 
   const put = (sq: string, code: PieceCode | null) =>
     setPlacement((p) => {

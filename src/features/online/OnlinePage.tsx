@@ -37,7 +37,9 @@ function MatchRoom({ room }: { room: RoomSnapshot }) {
   const [gameIndex, setGameIndex] = useState<number | null>(null);
   const games = room.matchGames.map((id) => room.games[id]);
   const current = games[gameIndex ?? games.length - 1];
-  useEffect(() => setGameIndex(null), [games.length]);
+  useEffect(() => {
+    setGameIndex(null);
+  }, [games.length]);
 
   // Match score across games.
   const scores: Record<string, number> = {};

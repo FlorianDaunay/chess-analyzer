@@ -47,7 +47,9 @@ function TournamentRoom({ room }: { room: RoomSnapshot }) {
         .sort((a, b) => b.id.localeCompare(a.id))[0]
     : undefined;
   const shown = (watching && room.games[watching]) || (myGame && !myGame.state.result ? myGame : undefined) || myGame;
-  useEffect(() => setWatching(null), [t?.round]);
+  useEffect(() => {
+    setWatching(null);
+  }, [t?.round]);
 
   if (room.phase === "lobby")
     return (
@@ -196,7 +198,9 @@ function Standings({ room, table }: { room: RoomSnapshot; table: ReturnType<type
 function Side({ room, table, onWatch, watching, hideStandings }: { room: RoomSnapshot; table: ReturnType<typeof standings>; onWatch: (id: string) => void; watching: string | null; hideStandings?: boolean }) {
   const t = room.tournament!;
   const [round, setRound] = useState(t.round);
-  useEffect(() => setRound(t.round), [t.round]);
+  useEffect(() => {
+    setRound(t.round);
+  }, [t.round]);
   const pairings = t.pairings.filter((p) => p.round === round);
   return (
     <div className="space-y-3">

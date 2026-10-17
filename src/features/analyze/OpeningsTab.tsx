@@ -49,7 +49,9 @@ function Repertoire({ games, color }: { games: GameSummary[]; color: "w" | "b" }
   const root = useMemo(() => buildRepertoire(games, color), [games, color]);
   const [path, setPath] = useState<string[]>([]);
   const [book, setBook] = useState<OpeningBook | null>(null);
-  useEffect(() => setPath([]), [color, games]);
+  useEffect(() => {
+    setPath([]);
+  }, [color, games]);
   useEffect(() => {
     void loadOpenings().then(setBook);
   }, []);

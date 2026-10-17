@@ -256,7 +256,9 @@ export function RoomGameView({ room, game, extraActions, side }: { room: RoomSna
   const openReview = useReview((s) => s.open);
   const mine = colorOf(game, myId);
   const [orientation, setOrientation] = useState<Color>(mine ?? "w");
-  useEffect(() => setOrientation(mine ?? "w"), [game.id, mine]);
+  useEffect(() => {
+    setOrientation(mine ?? "w");
+  }, [game.id, mine]);
   const players = useMemo(
     () => ({
       w: { name: `${playerName(room, game.white)}${room.lobby.find((p) => p.id === game.white)?.connected === false ? " (offline)" : ""}` },
