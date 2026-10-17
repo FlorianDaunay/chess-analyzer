@@ -11,6 +11,8 @@ export default defineConfig({
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   build: {
+    // The opening book (~600 kB, 87 kB gzipped) is loaded on demand.
+    chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
         manualChunks: { vendor: ["react", "react-dom", "react-router-dom", "zustand"], chess: ["chess.js"], peer: ["peerjs"] },

@@ -128,6 +128,8 @@ function PlayingScreen() {
   const [hint, setHint] = useState<Arrow[]>([]);
   const [bubble, setBubble] = useState<{ text: string; mood: Mood } | null>({ text: vsAi ? "Good luck, have fun!" : "", mood: "happy" });
   const prevCp = useRef<number | null>(null);
+  // The setup screen may be scrolled down: show the board.
+  useEffect(() => window.scrollTo(0, 0), []);
 
   const apply = (next: GameState) => setGame(next);
   const move = (uci: string) => {
@@ -239,7 +241,7 @@ function PlayingScreen() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="truncate">{vsAi ? `vs ${persona.name}` : "Local game"}</h1>
+        <h1 className="truncate text-lg sm:text-2xl">{vsAi ? `vs ${persona.name}` : "Local game"}</h1>
         <button
           className="btn"
           onClick={() => {

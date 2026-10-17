@@ -104,7 +104,7 @@ export function GameView(props: GameViewProps) {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
-      <div className="mx-auto w-full max-w-[min(100%,calc(100dvh-250px))] lg:max-w-[calc(100dvh-190px)]">
+      <div className="mx-auto w-full max-w-[min(100%,calc(100dvh-300px))] lg:max-w-[calc(100dvh-190px)]">
         {banner}
         {bar(top)}
         <Board

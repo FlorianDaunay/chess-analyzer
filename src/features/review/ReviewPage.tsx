@@ -213,7 +213,7 @@ function Review() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="mx-auto w-full max-w-[min(100%,calc(100dvh-230px))] lg:max-w-[calc(100dvh-200px)]">
+        <div className="mx-auto w-full max-w-[min(100%,calc(100dvh-270px))] lg:max-w-[calc(100dvh-200px)]">
           <div className="flex gap-2">
             {engineOn && <EvalBar wp={wp} label={formatScore(evalScore)} orientation={orientation} className="w-3 shrink-0 sm:w-5" />}
             <div className="min-w-0 flex-1">

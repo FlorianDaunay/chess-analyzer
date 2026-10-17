@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, type ReactNode } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { Icon, type IconName } from "@/ui/icons";
 import { Mascot } from "@/ui/mascot/Mascot";
 import { GuideWidget } from "@/ui/mascot/GuideWidget";
@@ -17,6 +17,8 @@ export const NAV: { to: string; label: string; icon: IconName; mobile?: boolean 
 ];
 
 export function Layout({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+  useEffect(() => window.scrollTo(0, 0), [pathname]);
   return (
     <div className="flex min-h-[100dvh]">
       <aside className="sticky top-0 hidden h-[100dvh] w-56 shrink-0 flex-col border-r border-sidebar-border bg-sidebar p-3 lg:flex">
