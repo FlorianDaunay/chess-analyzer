@@ -2,12 +2,13 @@ import { Fragment, useEffect, useRef, type ReactNode } from "react";
 import type { MoveTree, TreeNode } from "@/core/chess/tree";
 import type { GameAnalysis } from "@/core/analysis/classify";
 import { CLASS_STYLE } from "@/ui/palette";
+import { scrollWithin } from "@/ui/scroll";
 
 /** Game moves with nested variations "( … )". Main-line moves show their classification. */
 export function MoveTreeView({ tree, current, onSelect, analysis }: { tree: MoveTree; current: string; onSelect: (id: string) => void; analysis?: GameAnalysis | null }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    ref.current?.querySelector("[data-current='true']")?.scrollIntoView({ block: "nearest" });
+    scrollWithin(ref.current, ref.current?.querySelector("[data-current='true']"));
   }, [current]);
 
   const moveEl = (node: TreeNode, showNumber: boolean, main: boolean) => {

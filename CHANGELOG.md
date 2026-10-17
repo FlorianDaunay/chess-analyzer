@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/); the version shown in the app comes from `package.json`.
 
+## [0.1.3] - 2026-10-17
+
+### Fixes
+- Phone: playing a move no longer scrolls the page down to the move list; the board stays in place.
+- Analyze: profile header fixed on small screens (ratings on one even row, letter avatar when the account has none, real username spelling) and tab labels no longer wrap.
+
 ## [0.1.2] - 2026-10-17
 
 ### Fixes
@@ -31,6 +37,7 @@ First release.
 - Free board editor with palette, presets and FEN.
 - ~60 UI themes, 6 board themes, light/dark following the system; PC and phone layouts.
 
+[0.1.3]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/FlorianDaunay/chess-analyzer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/FlorianDaunay/chess-analyzer/releases/tag/v0.1.0

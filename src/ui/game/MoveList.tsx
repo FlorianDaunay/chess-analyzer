@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
+import { scrollWithin } from "@/ui/scroll";
 
 /** Compact move list for a game in progress. `current` = index of the shown move (-1 = start). */
 export function MoveList({ sans, current, onSelect, startPly = 0 }: { sans: string[]; current: number; onSelect?: (i: number) => void; startPly?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const el = ref.current?.querySelector("[data-current='true']");
-    el?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    scrollWithin(ref.current, ref.current?.querySelector("[data-current='true']"));
   }, [current, sans.length]);
 
   const rows: { n: number; w?: number; b?: number }[] = [];

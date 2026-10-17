@@ -63,6 +63,9 @@ export interface GameSummary {
   ccAccuracy?: number;
 }
 
+/** The API lower-cases `username`; the profile URL keeps the real spelling ("Mr-DONOT"). */
+export const displayName = (p: CCProfile) => decodeURIComponent(p.url.split("/").filter(Boolean).pop() ?? p.username);
+
 export class ChessComError extends Error {
   constructor(
     message: string,

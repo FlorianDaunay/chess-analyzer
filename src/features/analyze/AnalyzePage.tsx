@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { computeStats } from "@/core/analysis/stats";
-import type { GameSummary } from "@/core/chesscom/api";
+import { displayName, type GameSummary } from "@/core/chesscom/api";
 import { useReview } from "@/store/review";
 import { useSettings } from "@/store/settings";
 import { Icon } from "@/ui/icons";
@@ -50,7 +50,8 @@ export default function AnalyzePage() {
   const presentClasses = TIME_CLASSES.filter((c) => st.games.some((g) => g.timeClass === c));
 
   const open = (g: GameSummary, ply?: number) => {
-    openReview({ id: g.id, pgn: g.pgn, white: g.color === "w" ? st.profile?.username ?? st.user : g.opponent, black: g.color === "b" ? st.profile?.username ?? st.user : g.opponent, orientation: g.color, ply });
+    const me = st.profile ? displayName(st.profile) : st.user;
+    openReview({ id: g.id, pgn: g.pgn, white: g.color === "w" ? me : g.opponent, black: g.color === "b" ? me : g.opponent, orientation: g.color, ply });
     navigate("/review");
   };
 
@@ -162,35 +163,45 @@ export default function AnalyzePage() {
   );
 }
 
+const RATING_KINDS = [
+  ["chess_bullet", "Bullet"],
+  ["chess_blitz", "Blitz"],
+  ["chess_rapid", "Rapid"],
+  ["chess_daily", "Daily"],
+] as const;
+
 function ProfileHeader() {
   const { profile, ratings } = useAnalysis();
   if (!profile) return null;
-  const r = (key: string) => (ratings?.[key] as { last?: { rating: number } } | undefined)?.last?.rating;
+  const name = displayName(profile);
+  const stat = (key: string) => ratings?.[key] as { last?: { rating: number }; best?: { rating: number } } | undefined;
+  const shown = RATING_KINDS.filter(([k]) => stat(k)?.last?.rating);
   return (
-    <div className="card flex flex-wrap items-center gap-4">
-      {profile.avatar ? <img src={profile.avatar} alt="" className="h-14 w-14 rounded-tile object-cover" /> : <div className="h-14 w-14 rounded-tile bg-surface-hover" />}
-      <div className="min-w-0 flex-1">
-        <a href={profile.url} target="_blank" rel="noreferrer" className="text-lg font-bold hover:underline">
-          {profile.title && <span className="mr-1 rounded bg-danger px-1 text-xs text-white">{profile.title}</span>}
-          {profile.username}
-        </a>
-        {profile.name && <div className="text-sm muted">{profile.name}</div>}
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {[
-          ["chess_bullet", "Bullet"],
-          ["chess_blitz", "Blitz"],
-          ["chess_rapid", "Rapid"],
-          ["chess_daily", "Daily"],
-        ].map(([k, label]) =>
-          r(k) ? (
-            <div key={k} className="rounded-tile bg-surface-hover px-3 py-1.5 text-center">
-              <div className="text-[11px] uppercase tracking-wide muted">{label}</div>
-              <div className="font-bold tabular-nums">{r(k)}</div>
-            </div>
-          ) : null
+    <div className="card flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        {profile.avatar ? (
+          <img src={profile.avatar} alt="" className="h-14 w-14 shrink-0 rounded-tile object-cover" />
+        ) : (
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-tile bg-accent/15 text-2xl font-bold uppercase text-accent">{name[0]}</div>
         )}
+        <div className="min-w-0">
+          <a href={profile.url} target="_blank" rel="noreferrer" className="flex min-w-0 items-center gap-1.5 text-lg font-bold hover:underline">
+            {profile.title && <span className="shrink-0 rounded bg-danger px-1 text-xs text-white">{profile.title}</span>}
+            <span className="truncate">{name}</span>
+          </a>
+          <div className="truncate text-sm muted">{profile.name ?? "chess.com"}</div>
+        </div>
       </div>
+      {shown.length > 0 && (
+        <div className="grid gap-2 sm:flex" style={{ gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
+          {shown.map(([k, label]) => (
+            <div key={k} className="min-w-0 rounded-tile bg-surface-hover px-2 py-1.5 text-center sm:min-w-[4.5rem]" title={stat(k)?.best ? `Best: ${stat(k)!.best!.rating}` : undefined}>
+              <div className="truncate text-[11px] uppercase tracking-wide muted">{label}</div>
+              <div className="font-bold tabular-nums">{stat(k)!.last!.rating}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

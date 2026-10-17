@@ -75,7 +75,7 @@
     @apply chip border-accent bg-accent/15 text-text-primary;
   }
   .tab {
-    @apply rounded-control px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover;
+    @apply shrink-0 whitespace-nowrap rounded-control px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover;
   }
   .tab-active {
     @apply tab bg-accent/15 text-text-primary;
