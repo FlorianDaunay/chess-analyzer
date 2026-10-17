@@ -54,6 +54,7 @@ export function winPercent(s: Score): number {
 export function formatScore(s: Score | undefined): string {
   if (!s) return "…";
   if (s.mate !== undefined) return s.mate === 0 ? "#" : `${s.mate > 0 ? "" : "-"}M${Math.abs(s.mate)}`;
+  if (Math.abs(s.cp ?? 0) >= 10_000) return "#";
   const v = (s.cp ?? 0) / 100;
   return `${v > 0 ? "+" : ""}${v.toFixed(1)}`;
 }
